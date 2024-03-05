@@ -65,5 +65,11 @@ def send_request_to_server():
     server_socket.close()
     
 
-# start_server()
-send_request_to_server()
+def DebugTest():
+    server = create_server()
+    start_server(server)
+    send_request_to_server()
+    server._clear_data()
+    
+
+DebugTest()

@@ -44,7 +44,7 @@ class RegistrationServer:
                 responseBody = ResponseBody(f"Nickname {client_info.get_nickname} registered")
             
             # DEREGISTER returns a response along with the removed client_id.
-            if request.header.type == RequestTypes.DEREGISTER:
+            elif request.header.type == RequestTypes.DEREGISTER:
                 nickname = request.body.data
                 if (self.deregister_client(nickname)):
                     responseHeader = ResponseHeader(ResponseTypes.SUCCESS)
@@ -55,7 +55,7 @@ class RegistrationServer:
                     responseBody = ResponseBody(f"Nickname {nickname} not registered")
             
             # RETRIEVE returns the client_info of the found client if stored.
-            if request.header.type == RequestTypes.RETRIEVE:
+            elif request.header.type == RequestTypes.RETRIEVE:
                 nickname = request.body.data
                 client_info = self.retrieve(nickname)
                 if (client_info != None):
@@ -67,7 +67,7 @@ class RegistrationServer:
                     responseBody = ResponseBody(f"Nickname {nickname} not registered")
             
             # RETRIEVEALL returns a list of all the client_info stored.
-            if request.header.type == RequestTypes.RETRIEVEALL:
+            elif request.header.type == RequestTypes.RETRIEVEALL:
                 nickname = request.body.data
                 clients_list = self.retrieve_all()
                 responseHeader = ResponseHeader(ResponseTypes.SUCCESS)
@@ -100,19 +100,21 @@ class RegistrationServer:
     # JSON Methods        
     
     def _load_data(self):
-        """Load All the Data from JSON"""
+        """Load All the Data from the JSON Document"""
         try:
             with open(self.JSON_file, 'r') as file:
                 return json.load(file)
         except FileNotFoundError:
             return {}
 
-
-
     def _save_data(self, data):
         """Save Data to JSON Document"""
         with open(self.JSON_file, 'w') as file:
             json.dump(data, file, indent=4)
+    
+    def _clear_data(self):
+        """Clear All the Data from the JSON Document"""
+        self._save_data({})
         
         
         
@@ -152,7 +154,7 @@ class RegistrationServer:
             self._save_data(data)
             return True
         
-        return False
+        return False        
     
     
 if __name__ == "__main__":
@@ -160,10 +162,10 @@ if __name__ == "__main__":
     server = RegistrationServer('127.0.0.1', 9999)
     server.start_server()
     
-# if __name__ == "publicIP":
-#     # PUBLIC IP
-#     server_host = get_public_ip()
-#     server_port = 9999
-#     server = RegistrationServer('127.0.0.1', 9999)
-#     setup_port_forward(9999)
-#     server.start_server()
+if __name__ == "publicIP":
+    # PUBLIC IP
+    server_host = get_public_ip()
+    server_port = 9999
+    server = RegistrationServer('127.0.0.1', 9999)
+    setup_port_forward(9999)
+    server.start_server()
