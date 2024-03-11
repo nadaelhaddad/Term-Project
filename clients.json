@@ -1,3 +1,7 @@
 {
-    "TestUser": "{\"Nickname\": \"TestUser\", \"IP\": \"192.168.1.1\", \"Listening_Port\": \"5050\"}"
+    "TestUser": "{\"Nickname\": \"TestUser\", \"IP\": \"192.168.1.1\", \"Listening_Port\": \"5050\"}",
+    "Omar": "{\"Nickname\": \"Omar\", \"IP\": \"10.30.13.53\", \"Listening_Port\": 5050}",
+    "Aakash": "{\"Nickname\": \"Aakash\", \"IP\": \"10.30.13.53\", \"Listening_Port\": 3450}",
+    "alo": "{\"Nickname\": \"alo\", \"IP\": \"10.30.13.53\", \"Listening_Port\": 64931}",
+    "Amna": "{\"Nickname\": \"Amna\", \"IP\": \"10.30.13.53\", \"Listening_Port\": \"5050\"}"
 }

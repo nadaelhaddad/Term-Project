@@ -68,7 +68,6 @@ class RegistrationServer:
             
             # RETRIEVEALL returns a list of all the client_info stored.
             elif request.header.type == RequestTypes.RETRIEVEALL:
-                nickname = request.body.data
                 clients_list = self.retrieve_all()
                 responseHeader = ResponseHeader(ResponseTypes.SUCCESS)
                 responseBody = ResponseBody(f"{[client.serialize() for client in clients_list]}")

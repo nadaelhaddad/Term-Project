@@ -35,3 +35,9 @@ def get_public_ip() -> str:
     # Using a public IP address API service
     response = requests.get('https://api.ipify.org')
     return response.text
+
+def get_free_port() -> int:
+    # Create a temporary socket to determine a free port
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(('0.0.0.0', 0))
+    print('listening on port:', sock.getsockname()[1])
