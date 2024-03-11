@@ -21,7 +21,7 @@ class RegistrationServer:
 
     def start_server(self):
         self.server.bind((self.host, self.port))
-        self.server.listen(5)
+        self.server.listen()
         print(f"Server listening on {self.host}:{self.port}")
         while True:
             client_socket, address = self.server.accept()
@@ -74,7 +74,7 @@ class RegistrationServer:
                             
         except Exception as e:
             responseHeader = ResponseHeader(ResponseTypes.SERVER_ERROR)
-            responseBody = ResponseBody(str(e.args))
+            responseBody = ResponseBody(str(e))
         
         finally:
             response = Response(responseHeader, responseBody)
