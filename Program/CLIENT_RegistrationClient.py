@@ -22,7 +22,7 @@ class RegistrationClient:
         
         self.listening_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.listening_socket.bind((client_ip, client_port))
-        listening_thread = threading.Thread(target=self.listen_for_connections()).start()
+        listening_thread = threading.Thread(target=self.listen_for_connections).start()
         
         
     def handle_incoming_connection(self,client_socket: socket.socket):
@@ -41,10 +41,10 @@ class RegistrationClient:
             while True:
                 client_socket, address = self.listening_socket.accept()
                 print(f"Accepted connection from {address[0]}:{address[1]}")
-                threading.Thread(target=self.handle_incoming_connection, args=(client_socket,)).start()
+                threading.Thread(target=self.handle_incoming_connection).start()
 
     
-    def register_with_server(self, client_info):
+    def register_with_server(self, client_info) -> Response:
         """Register this client with the registration server."""
         # listening_thread = threading.Thread(target=self.listen_for_connections(56658))
         # listening_thread.daemon = True  # Set the thread as daemon
@@ -59,11 +59,12 @@ class RegistrationClient:
             sock.sendall(request.encode_and_serialize())
             response = Response.decode_and_desearialize(sock.recv(1024))
             sock.close()
-        return response.header.type
+        # return response.header.type
+        return response
 
 
         
-    def request_client_info(self, client_id):
+    def request_client_info(self, client_id) -> Response:
         """Request information for a specific client by ID."""
         requestHeader = RequestHeader(RequestTypes.RETRIEVE)
         requestBody = RequestBody(client_id)
@@ -74,10 +75,11 @@ class RegistrationClient:
             sock.sendall(request.encode_and_serialize())
             response = Response.decode_and_desearialize(sock.recv(1024))
             sock.close()
-        return response.body.data
+        # return response.body.data
+        return response
 
         
-    def request_all_clients(self):
+    def request_all_clients(self) -> Response:
         """Request the details of all the clients registered at the server."""
         requestHeader = RequestHeader(RequestTypes.RETRIEVEALL)
         requestBody = RequestBody()
@@ -88,11 +90,12 @@ class RegistrationClient:
             sock.sendall(request.encode_and_serialize())
             response = Response.decode_and_desearialize(sock.recv(1024))
             sock.close()
-        return response.body.data
+        # return response.body.data
+        return response
 
         
 
-    def deregister_with_server(self, client_id):
+    def deregister_with_server(self, client_id) -> Response:
         """Degesisters this client from this server"""
         requestHeader = RequestHeader(RequestTypes.DEREGISTER)
         requestBody = RequestBody(client_id)
@@ -103,38 +106,39 @@ class RegistrationClient:
             sock.sendall(request.encode_and_serialize())
             response = Response.decode_and_desearialize(sock.recv(1024))
             sock.close()
-        return response.body.data
+        # return response.body.data
+        return response
 
 
 
 
-if __name__ == "__main__":
-    # LOCAL TEST
-    server_host = '127.0.0.1'
-    server_port = 9999
-    client_nickname = "Amna"
-    client_private_ip =  get_private_ip()
-    client_listening_port = "5050"
+# if __name__ == "__main__":
+#     # LOCAL TEST
+#     server_host = '127.0.0.1'
+#     server_port = 9999
+#     client_nickname = "Amna"
+#     client_private_ip =  get_private_ip()
+#     client_listening_port = "5050"
     
-    client_info = Client_Info(client_nickname, client_private_ip, client_listening_port)
-    client = RegistrationClient(server_host, server_port, client_info)
+#     client_info = Client_Info(client_nickname, client_private_ip, client_listening_port)
+#     client = RegistrationClient(server_host, server_port, client_info)
 
-    # Register this client with the server
-    client.register_with_server(client_info)
+#     # Register this client with the server
+#     client.register_with_server(client_info)
 
-    # Request information for a specific client (can be this client or another)
-    client.request_client_info(client_nickname)
+#     # Request information for a specific client (can be this client or another)
+#     client.request_client_info(client_nickname)
     
-    # Request information for all clients on server
-    client.request_all_clients()
+#     # Request information for all clients on server
+#     client.request_all_clients()
 
-    client.deregister_with_server(client_nickname)
+#     client.deregister_with_server(client_nickname)
     
-    # client.listen_for_connections(56658)
+#     # client.listen_for_connections(56658)
 
-    #Run connectivity test on specific client
-    target_ip = "10.30.13.53"
-    target_port = 3294
+#     #Run connectivity test on specific client
+#     target_ip = "10.30.13.53"
+#     target_port = 3294
     
     
 
