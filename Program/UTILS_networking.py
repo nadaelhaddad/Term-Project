@@ -30,11 +30,11 @@ def get_private_ip() -> str:
         print(f"Error obtaining private IP address: {e}")
         return ""
 
-import requests
 def get_public_ip() -> str:
     # Using a public IP address API service
-    response = requests.get('https://api.ipify.org')
-    return response.text
+    # response = requests.get('https://api.ipify.org')
+    # return response.text
+    return None
 
 def get_free_port() -> int:
     # Create a temporary socket to determine a free port

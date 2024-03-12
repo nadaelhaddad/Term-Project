@@ -9,17 +9,23 @@ from PROTOCOL_Request import RequestBody, RequestHeader, RequestTypes, Request
 from PROTOCOL_Response import Response, ResponseBody, ResponseHeader, ResponseTypes
 from SERVER_RegistrationServer import RegistrationServer
 from connectivity_test import connectivity_test
-from connect import connectivity_test_me
 
-class RegistrationClient:
+class RegistrationClient:    
     def __init__(self, server_host: str, server_port: int, client_info: Client_Info):
         self.server_host = server_host
         self.server_port = server_port
         self.client_info = client_info
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    def handle_incoming_connection(self,client_info):
-        client_socket, client_address = client_info
-        print(f"Connected by {client_address}")
+        
+        # Listening socket on new thread
+        client_ip = client_info.get_ip()
+        client_port = int(client_info.get_listening_port())
+        
+        self.listening_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.listening_socket.bind((client_ip, client_port))
+        listening_thread = threading.Thread(target=self.listen_for_connections()).start()
+        
+        
+    def handle_incoming_connection(self,client_socket: socket.socket):
         while True:
             data = client_socket.recv(1024)
             if not data:
@@ -28,19 +34,14 @@ class RegistrationClient:
             client_socket.close()
 
 
-    def listen_for_connections(self,listening_port):
-        host = get_private_ip()
-        """Function to listen for incoming connections on the assigned port."""
-        listening_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        listening_socket.bind((host,listening_port))
-        listening_socket.listen(1)
-        print(f"Listening for connections")
-        while True:
-            client_socket, client_address = listening_socket.accept()
-            print("Accepted")
-            client_info = (client_socket, client_address)
-            thread = threading.Thread(target=self.handle_incoming_connection, args=(client_info,))
-            thread.start()
+    def listen_for_connections(self):
+            """Function to listen for incoming connections on the assigned port."""
+            self.listening_socket.listen(1)
+            print(f"Listening for connections")
+            while True:
+                client_socket, address = self.listening_socket.accept()
+                print(f"Accepted connection from {address[0]}:{address[1]}")
+                threading.Thread(target=self.handle_incoming_connection, args=(client_socket,)).start()
 
     
     def register_with_server(self, client_info):

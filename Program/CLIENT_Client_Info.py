@@ -10,7 +10,7 @@ class Client_Info(UserDict[str, str], Serialized,):
 
         
     def get_ip(self) -> str:
-        return self.data.get('Nickname', "")
+        return self.data.get('IP', "")
 
     
     def get_listening_port(self) -> str:

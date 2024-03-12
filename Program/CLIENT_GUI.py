@@ -5,19 +5,19 @@ import threading
 
 root = tk.Tk()
 
+# Fill out Client_Info
+client_private_ip = "0.0.0.0"
+client_listening_port = get_free_port()
+client_nickname = "Aakash"
+
+server_host = "127.0.0.1"
+server_port = 9999
+
+client_info = Client_Info(client_nickname, client_private_ip, client_listening_port)
+client = RegistrationClient(server_host, server_port, client_info)
+
 def register():
-    server_host = ipEntry.get()
-    server_port = int(hostPortEntry.get())
-    client_nickname = nameEntry.get()
-    client_private_ip =  get_private_ip()
-    client_listening_port = get_free_port()
-
-    client_info = Client_Info(client_nickname, client_private_ip, client_listening_port)
-    client = RegistrationClient(server_host, server_port, client_info)
-    
     response = client.register_with_server(client_info)
-
-
 
     if(response) == ResponseTypes.SUCCESS:
         end = "Succesfully registered " + client_nickname
@@ -28,15 +28,6 @@ def register():
     answer.place(x=235,y=150)
 
 def retrieve():
-    server_host = ipEntry.get()
-    server_port = int(hostPortEntry.get())
-    client_nickname = nameEntry.get()
-    client_private_ip =  get_private_ip()
-    client_listening_port = get_free_port()
-
-    client_info = Client_Info(client_nickname, client_private_ip, client_listening_port)
-    client = RegistrationClient(server_host, server_port, client_info)
-
     response = client.request_client_info(client_nickname)
 
     client.listen_for_connections(client_listening_port)
@@ -49,30 +40,12 @@ def retrieve():
 
 
 def retrieve_all():
-    server_host = ipEntry.get()
-    server_port = int(hostPortEntry.get())
-    client_nickname = nameEntry.get()
-    client_private_ip =  get_private_ip()
-    client_listening_port = get_free_port()
-
-    client_info = Client_Info(client_nickname, client_private_ip, client_listening_port)
-    client = RegistrationClient(server_host, server_port, client_info)
-
     response = client.request_all_clients()
     
     answer = tk.Label(frame, text=response,anchor=NW, bg="#FFC0CB", font=("Helvetica", 11), width= 60, height=20,wraplength=500)
     answer.place(x=235,y=150)
 
 def deregister():
-    server_host = ipEntry.get()
-    server_port = int(hostPortEntry.get())
-    client_nickname = nameEntry.get()
-    client_private_ip =  get_private_ip()
-    client_listening_port = get_free_port()
-
-    client_info = Client_Info(client_nickname, client_private_ip, client_listening_port)
-    client = RegistrationClient(server_host, server_port, client_info)
-
     response = client.deregister_with_server(client_nickname)
     
     answer = tk.Label(frame, text=response,anchor=NW, bg="#FFC0CB", font=("Helvetica", 11), width= 60, height=20,wraplength=500)
