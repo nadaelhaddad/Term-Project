@@ -40,4 +40,4 @@ def get_free_port() -> int:
     # Create a temporary socket to determine a free port
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(('0.0.0.0', 0))
-    print('listening on port:', sock.getsockname()[1])
+    return sock.getsockname()[1]

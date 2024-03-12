@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from CLIENT_RegistrationClient import *
-
+import threading
 
 root = tk.Tk()
 
@@ -17,6 +17,8 @@ def register():
     
     response = client.register_with_server(client_info)
 
+
+
     if(response) == ResponseTypes.SUCCESS:
         end = "Succesfully registered " + client_nickname
     else:
@@ -30,12 +32,17 @@ def retrieve():
     server_port = int(hostPortEntry.get())
     client_nickname = nameEntry.get()
     client_private_ip =  get_private_ip()
-    client_listening_port = int(portEntry.get())
+    client_listening_port = get_free_port()
 
     client_info = Client_Info(client_nickname, client_private_ip, client_listening_port)
     client = RegistrationClient(server_host, server_port, client_info)
 
     response = client.request_client_info(client_nickname)
+
+    client.listen_for_connections(client_listening_port)
+    
+    # listening_thread = threading.Thread(target=client.listen_for_connections(client_listening_port))
+    # listening_thread.start()
     
     answer = tk.Label(frame, text=response,anchor=NW, bg="#FFC0CB", font=("Helvetica", 11), width= 60, height=20,wraplength=500)
     answer.place(x=235,y=150)
@@ -46,7 +53,7 @@ def retrieve_all():
     server_port = int(hostPortEntry.get())
     client_nickname = nameEntry.get()
     client_private_ip =  get_private_ip()
-    client_listening_port = int(portEntry.get())
+    client_listening_port = get_free_port()
 
     client_info = Client_Info(client_nickname, client_private_ip, client_listening_port)
     client = RegistrationClient(server_host, server_port, client_info)
@@ -61,7 +68,7 @@ def deregister():
     server_port = int(hostPortEntry.get())
     client_nickname = nameEntry.get()
     client_private_ip =  get_private_ip()
-    client_listening_port = int(portEntry.get())
+    client_listening_port = get_free_port()
 
     client_info = Client_Info(client_nickname, client_private_ip, client_listening_port)
     client = RegistrationClient(server_host, server_port, client_info)
@@ -110,11 +117,11 @@ nameEntry.place(x=10,y=215)
 defaultAmount = tk.StringVar(root, value="10")
 
 #Port entry
-port = tk.Label(frame, text="Port", font=("Helvetica", 14), bg="#FFFF00", width= 17,)
-port.place(x=10,y=255)
-portEntry = tk.Entry(frame,bg="#FFFF00",font=("Helvetica", 14), width=17,
-                     textvariable=tk.StringVar(root, value="5050"))
-portEntry.place(x=10,y=290)
+# port = tk.Label(frame, text="Port", font=("Helvetica", 14), bg="#FFFF00", width= 17,)
+# port.place(x=10,y=255)
+# portEntry = tk.Entry(frame,bg="#FFFF00",font=("Helvetica", 14), width=17,
+#                      textvariable=tk.StringVar(root, value="5050"))
+# portEntry.place(x=10,y=290)
 
 
 
@@ -138,17 +145,17 @@ retrieve_all_clients = tk.Button(frame, text="Retrieve All Clients", width=25, h
                                  command=retrieve_all) 
 retrieve_all_clients.place(x=10,y=500)
 
-
+stress = tk.IntVar
+connection = tk.IntVar
 # Test checkboxes
 stressTest = tk.Checkbutton(frame,text = "Stress test",activebackground="black" , activeforeground="blue" 
                  ,bg="#263D42",bd=10, 
-                 onvalue = 1, offvalue = 0)
+                 onvalue = 1, offvalue = 0, variable=stress)
 stressTest.place(x=400, y=25)
 
 connectionTest = tk.Checkbutton(frame,text = "Connection test",activebackground="black" , activeforeground="blue" 
                  ,bg="#263D42",bd=10, 
-                 onvalue = 1, offvalue = 0)
+                 onvalue = 1, offvalue = 0, variable=connection)
 connectionTest.place(x=400, y=70)
-
 
 root.mainloop()
