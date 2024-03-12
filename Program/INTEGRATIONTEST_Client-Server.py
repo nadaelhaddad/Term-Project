@@ -19,6 +19,7 @@ class IntegrationTestClientServerRegistration(unittest.TestCase):
     def tearDownClass(cls):
         """Clean up after all tests"""
         import os
+        cls.server_thread.join()
         if os.path.exists('temp_test_clients_integration.json'):
             os.remove('temp_test_clients_integration.json')
 
@@ -29,19 +30,21 @@ class IntegrationTestClientServerRegistration(unittest.TestCase):
 
         # Test registration
         response = client.register_with_server(client_info)
-        self.assertEqual(response, ResponseTypes.SUCCESS, "Client registration failed")
+        self.assertEqual(response.header.type, ResponseTypes.SUCCESS, "Client registration failed")
 
         # Test retrieve
-        retrieved_info = client.request_client_info("IntegrationTestUser")
+        response = client.request_client_info("IntegrationTestUser")
+        retrieved_info = response.body.data
         self.assertIsNotNone(retrieved_info, "Failed to retrieve registered client info")
 
         # Test retrieve all
-        all_clients_info = client.request_all_clients()
+        response = client.request_all_clients()
+        all_clients_info = response.body.data
         self.assertIn("IntegrationTestUser", all_clients_info, "Failed to retrieve all clients info")
 
         # Test deregistration
-        deregister_response = client.deregister_with_server("IntegrationTestUser")
-        self.assertEqual(deregister_response, ResponseTypes.SUCCESS, "Client deregistration failed")
+        response = client.deregister_with_server("IntegrationTestUser")
+        self.assertEqual(response.header.type, ResponseTypes.SUCCESS, "Client deregistration failed")
 
 if __name__ == '__main__':
     unittest.main()
